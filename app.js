@@ -3,11 +3,13 @@
  * Module dependencies.
  */
 global.config = require('./config.js');
+global.db_config = require('./db_config.js');
 
 var express = require('express')
   , routes = require('./routes')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , userDao = require('./lib/userDao.js');
 
 // Create an Evernote instance
 var Evernote = require('evernode').Evernote;
@@ -36,6 +38,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+
+userDao.initDB(db_config.dbPath,db_config.db, db_config.userTablename);
+/*userDao.insertUser("kjs8469","123123123");
+userDao.insertUser("ephemera","456456456");
+userDao.readAllUsers(function(err,rows){
+	console.log(rows);
+});
+userDao.readUser("kjs8469",function(err,rows){
+	console.log(rows);
+});
+*/
 
 app.get('/', routes.index);
 app.get('/home', routes.index);
@@ -74,6 +87,14 @@ app.all('/authentication/callback', function(req, res){
 
 				req.session.authToken = authToken;
 				req.session.user = edamUser;
+
+				var username = edamUser["username"];
+
+				userDao.readUser(username,function(err,rows){
+					if(rows.length == 0){
+						userDao.insertUser(username,authToken);
+					}
+				});
 
 				res.redirect('/');
 			});
