@@ -93,6 +93,11 @@ app.all('/authentication/callback', function(req, res){
 				userDao.readUser(username,function(err,rows){
 					if(rows.length == 0){
 						userDao.insertUser(username,authToken);
+
+						evernote.createNotebook(edamUser, {name:'test'}, function(err, tag) {
+							console.log('tag',tag);
+							console.log('err',err);
+			  		});
 					}
 				});
 
