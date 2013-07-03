@@ -93,13 +93,46 @@ app.all('/authentication/callback', function(req, res){
 				userDao.readUser(username,function(err,rows){
 					if(rows.length == 0){
 						userDao.insertUser(username,authToken);
-
-						evernote.createNotebook(edamUser, {name:'test'}, function(err, tag) {
-							console.log('tag',tag);
-							console.log('err',err);
-			  		});
 					}
 				});
+
+
+				evernote.listTags(edamUser, function(err, tagList) {
+					var existUrlNote = false;
+					var guid_list = [];
+					tagList.forEach(function(tag){
+	  				if(tag.name=='evereader-url'){
+	  					guid_list.push(tag.guid);
+	  				}
+	  			});
+
+	  			evernote.listNotebooks(edamUser, function(err, notebookList) {
+						var notebookGuid = "";
+						notebookList.forEach(function(notebook_){
+							if(notebook_.name == 'evereader'){
+								notebookGuid = notebook_.guid;
+							}
+						});
+
+						evernote.findNotes(edamUser,  'evereader-url', { tagGuids : guid_list }, function(err, noteList) {
+		    			noteList.notes.forEach(function(note){
+		    				if(note.notebookGuid == notebookGuid){
+			  					existUrlNote = true;
+		    				}
+			  			});
+
+		    			if(!existUrlNote){
+		  					evernote.createNotebook(edamUser, {name:'evereader'}, function(err, notebook) {
+									if(notebook!=undefined){
+										notebookGuid = notebook.guid;
+									}
+									evernote.createNote(edamUser, { title: 'evereader-url', content: '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">\n<en-note style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>blog.evereader.io/rss</div>\n</en-note>', notebookGuid : notebookGuid, tagNames : ['evereader-url']},function(err, note){
+									});
+		  					});
+		  				}
+		  			});
+			    });
+		 		});
 
 				res.redirect('/');
 			});
