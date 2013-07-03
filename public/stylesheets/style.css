@@ -6,7 +6,7 @@ body {
 /* Custom container */
 .container-narrow {
   margin: 0 auto;
-  max-width: 700px;
+  max-width: 1000px;
 }
 .container-narrow > hr {
   margin: 30px 0;
@@ -14,11 +14,11 @@ body {
 
 /* Main marketing message and sign up button */
 .jumbotron {
-  margin: 60px 0;
+  margin: 30px 0;
   text-align: center;
 }
 .jumbotron h1 {
-  font-size: 72px;
+  font-size: 50px;
   line-height: 1;
 }
 .jumbotron .btn {
@@ -32,4 +32,10 @@ body {
 }
 .marketing p + h4 {
   margin-top: 28px;
+}
+.nav-pills .active a, .nav-pills .active a:hover {
+  background-color:#51a351;
+}
+a {
+  color:#51a351;
 }
