@@ -9,6 +9,12 @@ exports.index = function(req, res){
   });
 };
 
+exports.welcome = function(req, res){
+  res.render('welcome', {
+  	title: 'Evereader'
+  });
+};
+
 exports.about = function(req, res){
   res.render('about', {
   	title: 'Evereader'
