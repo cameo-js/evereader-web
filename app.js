@@ -93,6 +93,10 @@ app.all('/authentication/callback', function(req, res){
 				userDao.readUser(username,function(err,rows){
 					if(rows.length == 0){
 						userDao.insertUser(username,authToken);
+					} else {
+						userDao.updateUser(username,authToken,function(err,rows){
+
+						});
 					}
 				});
 
@@ -126,7 +130,7 @@ app.all('/authentication/callback', function(req, res){
 									if(notebook!=undefined){
 										notebookGuid = notebook.guid;
 									}
-									evernote.createNote(edamUser, { title: 'evereader-url', content: '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">\n<en-note style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>blog.evereader.io/rss</div>\n</en-note>', notebookGuid : notebookGuid, tagNames : ['evereader-url']},function(err, note){
+									evernote.createNote(edamUser, { title: 'evereader-url', content: decorator('evereader-url', 'http://blog.evereader.io/rss'), notebookGuid : notebookGuid, tagNames : ['evereader-url']},function(err, note){
 									});
 		  					});
 		  				}
@@ -138,4 +142,26 @@ app.all('/authentication/callback', function(req, res){
 			});
   });
 });
+
+function decorator(title, description) {
+
+  var str = '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">';
+  str += '<en-note style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;">';
+  str += '<div><span style="font-size:large;"><strong>' + title + '</strong></span></div>';
+  str += '<div><br clear="none"/></div>';
+  str += '<div>' + description + '</div>';
+  str += '<div><br clear="none"/></div>';
+  str += get_logo();
+  str += '</en-note>';
+
+  return str;
+}
+
+function get_logo() {
+    var str = '<div>';
+    str += '<div style="background-color: #6bb130; background-image: url(http://24.media.tumblr.com/ec64d0fe2381e97deb8e84f200741e3f/tumb lr_m p959c1gJm1sqjjz7o1_1280.png) no-repeat center top; border-bottom: 1px solid #5f9e2b; padding: 20px; text-align:center; font-family: Times New Roman; font-size:20px; font-weight: bold;">';
+    str += '<a style="text-decoration:none; color:#fff;" href="http://for.evereader.io">FOR.EVEREADER.IO</a></div>';
+    str += '</div>';
+    return str;
+}
 
