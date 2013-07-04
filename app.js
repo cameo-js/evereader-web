@@ -93,6 +93,10 @@ app.all('/authentication/callback', function(req, res){
 				userDao.readUser(username,function(err,rows){
 					if(rows.length == 0){
 						userDao.insertUser(username,authToken);
+					} else {
+						userDao.updateUser(username,authToken,function(err,rows){
+
+						});
 					}
 				});
 
