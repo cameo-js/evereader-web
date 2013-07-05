@@ -52,6 +52,7 @@ userDao.readUser("kjs8469",function(err,rows){
 
 app.get('/', routes.index);
 app.get('/home', routes.index);
+app.get('/welcome', routes.welcome);
 app.get('/about', routes.about);
 app.get('/contact', routes.contact);
 
@@ -138,7 +139,7 @@ app.all('/authentication/callback', function(req, res){
 			    });
 		 		});
 
-				res.redirect('/');
+				res.redirect('/welcome');
 			});
   });
 });
