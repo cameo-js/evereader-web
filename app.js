@@ -139,7 +139,7 @@ app.all('/authentication/callback', function(req, res){
 			    });
 		 		});
 
-				res.redirect('/');
+				res.redirect('/welcome');
 			});
   });
 });
